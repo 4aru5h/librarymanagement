@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library System - Login</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #161a1d;
+            color: #f8f9fa;
+        }
+
+        .login-container {
+            width: 300px;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: #1e2125;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #f8f9fa;
+        }
+
+        .login-button {
+            width: 100%;
+            margin-bottom: 10px;
+            color: #f8f9fa;
+        }
+
+        .login-form {
+            display: none;
+            /* Initially hidden */
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #343a40;
+            border-radius: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #f8f9fa;
+        }
+
+        .form-control {
+            background-color: #252a2e;
+            color: #f8f9fa;
+            border: 1px solid #343a40;
+            border-radius: 4px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            border-radius: 4px;
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .btn-warning {
+            width: 100%;
+            border-radius: 4px;
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+            color: #212529;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <button class="btn btn-primary login-button" onclick="showLoginForm('reader')">Reader Login</button>
+        <button class="btn btn-warning login-button" onclick="showLoginForm('admin')">Admin Login</button>
+
+        <div id="readerLoginForm" class="login-form">
+            <h3>Reader Login</h3>
+            <div class="form-group">
+                <label for="readerUsername">Username</label>
+                <select class="form-control" id="readerUsername">
+                    <option value="aarush">aarush</option>
+                    <option value="ishita">ishita</option>
+                    <option value="havish">havish</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="readerPassword">Password</label>
+                <input type="password" class="form-control" id="readerPassword">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="login('reader')">Login as Reader</button>
+        </div>
+
+        <div id="adminLoginForm" class="login-form">
+            <h3>Admin Login</h3>
+            <div class="form-group">
+                <label for="adminUsername">Username</label>
+                <input type="text" class="form-control" id="adminUsername" value="admin">
+            </div>
+            <div class="form-group">
+                <label for="adminPassword">Password</label>
+                <input type="password" class="form-control" id="adminPassword" value="123456">
+            </div>
+            <button type="button" class="btn btn-warning" onclick="login('admin')">Login as Admin</button>
+        </div>
+    </div>
+
+    <script>
+        function showLoginForm(userType) {
+            document.getElementById('readerLoginForm').style.display = (userType === 'reader') ? 'block' : 'none';
+            document.getElementById('adminLoginForm').style.display = (userType === 'admin') ? 'block' : 'none';
+        }
+
+        function login(userType) {
+            const usernameInput = document.getElementById(userType === 'reader' ? 'readerUsername' : 'adminUsername');
+            const passwordInput = document.getElementById(userType === 'reader' ? 'readerPassword' : 'adminPassword');
+            const username = usernameInput.value;
+            const password = passwordInput.value;
+
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password, userType }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = data.redirect;
+                    } else {
+                        alert(data.message || 'Login failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during login:', error);
+                    alert('Login failed due to a network error');
+                });
+        }
+
+        // Initially show neither form
+        showLoginForm(null);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library System - Admin</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #161a1d;
+            color: #f8f9fa;
+        }
+
+        .navbar {
+            background-color: #1e2125;
+            color: #f8f9fa;
+        }
+
+        .navbar-brand {
+            color: #ffc107;
+            /* Admin specific color */
+        }
+
+        .navbar-nav .nav-link {
+            color: #f8f9fa;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #ffc107;
+        }
+
+        .container-fluid {
+            margin-top: 80px;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #ffc107;
+            margin-bottom: 20px;
+        }
+
+        .book-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .book-table th,
+        .book-table td {
+            border: 1px solid #343a40;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .book-table th {
+            background-color: #252a2e;
+            color: #f8f9fa;
+        }
+
+        .btn-sm {
+            margin-right: 5px;
+        }
+
+        .add-book-section,
+        .edit-book-section {
+            background-color: #1e2125;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .add-book-section h3,
+        .edit-book-section h3 {
+            color: #ffc107;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            color: #f8f9fa;
+        }
+
+        .form-control {
+            background-color: #252a2e;
+            color: #f8f9fa;
+            border: 1px solid #343a40;
+        }
+
+        .form-control:focus {
+            background-color: #2c3136;
+            color: #f8f9fa;
+            border-color: #5a6268;
+            box-shadow: 0 0 0 0.2rem rgba(90, 98, 104, 0.25);
+        }
+
+        .btn-success,
+        .btn-danger,
+        .btn-info,
+        .btn-primary {
+            margin-right: 5px;
+            color: #f8f9fa;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .btn-success:hover {
+            background-color: #1e7e34;
+            border-color: #1c7430;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+
+        .btn-info {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+        }
+
+        .btn-info:hover {
+            background-color: #117a8b;
+            border-color: #10707f;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            z-index: 1;
+            /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            overflow: auto;
+            /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #1e2125;
+            margin: 15% auto;
+            /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #343a40;
+            width: 80%;
+            /* Could be more or less, depending on screen size */
+            border-radius: 8px;
+        }
+
+        .modal-header {
+            color: #ffc107;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-button {
+            color: #f8f9fa;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-body .form-group {
+            margin-bottom: 15px;
+        }
+
+        .modal-body label {
+            color: #f8f9fa;
+        }
+
+        .modal-footer {
+            margin-top: 20px;
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">Admin Panel</a>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <button class="btn btn-outline-warning my-2 my-lg-0" onclick="logout()">Logout</button>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="container-fluid">
+        <h2>Book Management</h2>
+
+        <div class="add-book-section">
+            <h3>Add New Book</h3>
+            <form id="addBookForm">
+                <div class="form-group">
+                    <label for="addTitle">Title</label>
+                    <input type="text" class="form-control" id="addTitle" placeholder="Enter title">
+                </div>
+                <div class="form-group">
+                    <label for="addAuthor">Author</label>
+                    <input type="text" class="form-control" id="addAuthor" placeholder="Enter author">
+                </div>
+                <div class="form-group">
+                    <label for="addCoverUrl">Cover URL</label>
+                    <input type="text" class="form-control" id="addCoverUrl" placeholder="Enter cover image URL">
+                </div>
+                <button type="button" class="btn btn-success" onclick="addBook()">Add Book</button>
+            </form>
+        </div>
+
+        <table class="book-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Cover</th>
+                    <th>Status</th>
+                    <th>Borrowed By</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="bookTableBody">
+            </tbody>
+        </table>
+
+        <div id="editBookModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="editModalTitle">Edit Book</h2>
+                    <span class="close-button" onclick="closeEditModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <form id="editBookForm">
+                        <div class="form-group">
+                            <label for="editTitle">Title</label>
+                            <input type="text" class="form-control" id="editTitle">
+                        </div>
+                        <div class="form-group">
+                            <label for="editAuthor">Author</label>
+                            <input type="text" class="form-control" id="editAuthor">
+                        </div>
+                        <div class="form-group">
+                            <label for="editCoverUrl">Cover URL</label>
+                            <input type="text" class="form-control" id="editCoverUrl">
+                        </div>
+                        <input type="hidden" id="editBookId">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="saveEditedBook()">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="node_modules/jquery/dist/jquery.slim.min.js"></script>
+    <script src="node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let books = [];
+        const bookTableBody = document.getElementById('bookTableBody');
+        const editBookModal = document.getElementById('editBookModal');
+        const editBookForm = document.getElementById('editBookForm');
+        const editTitleInput = document.getElementById('editTitle');
+        const editAuthorInput = document.getElementById('editAuthor');
+        const editCoverUrlInput = document.getElementById('editCoverUrl');
+        const editBookIdInput = document.getElementById('editBookId');
+
+        function fetchBooks() {
+            fetch('/api/books') // Changed endpoint to get status and borrower
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errData => {
+                            throw new Error(errData.message || 'Failed to fetch books');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    books = data;
+                    displayBooks();
+                })
+                .catch(error => {
+                    console.error('Error fetching books:', error);
+                    alert('Failed to load books.');
+                });
+        }
+
+        function displayBooks() {
+            bookTableBody.innerHTML = '';
+            books.forEach(book => {
+                const row = bookTableBody.insertRow();
+                const idCell = row.insertCell();
+                const titleCell = row.insertCell();
+                const authorCell = row.insertCell();
+                const coverCell = row.insertCell();
+                const statusCell = row.insertCell();
+                const borrowedByCell = row.insertCell();
+                const actionsCell = row.insertCell();
+
+                idCell.textContent = book.id;
+                titleCell.textContent = book.title;
+                authorCell.textContent = book.author;
+                coverCell.innerHTML = `<img src="${book.cover}" alt="${book.title}" style="max-width: 50px; max-height: 70px;">`;
+                statusCell.textContent = book.status || 'Available';
+                borrowedByCell.textContent = book.borrowedBy || '-';
+
+                const editButton = document.createElement('button');
+                editButton.classList.add('btn', 'btn-sm', 'btn-info');
+                editButton.textContent = 'Edit';
+                editButton.onclick = () => openEditModal(book);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.classList.add('btn', 'btn-sm', 'btn-danger');
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = () => deleteBook(book.id);
+
+                actionsCell.appendChild(editButton);
+                actionsCell.appendChild(deleteButton);
+            });
+        }
+
+        function addBook() {
+            const title = document.getElementById('addTitle').value.trim();
+            const author = document.getElementById('addAuthor').value.trim();
+            const coverUrl = document.getElementById('addCoverUrl').value.trim();
+
+            if (title && author && coverUrl) {
+                fetch('/api/books', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ title, author, cover: coverUrl }),
+                })
+                    .then(response => response.json())
+                    .then(newBook => {
+                        books.push(newBook);
+                        displayBooks();
+                        document.getElementById('addBookForm').reset();
+                    })
+                    .catch(error => {
+                        console.error('Error adding book:', error);
+                        alert('Failed to add book.');
+                    });
+            } else {
+                alert('Please fill in all book details.');
+            }
+        }
+
+        function openEditModal(book) {
+            editTitleInput.value = book.title;
+            editAuthorInput.value = book.author;
+            editCoverUrlInput.value = book.cover;
+            editBookIdInput.value = book.id;
+            editBookModal.style.display = "block";
+        }
+
+        function closeEditModal() {
+            editBookModal.style.display = "none";
+            editBookForm.reset();
+        }
+
+        function saveEditedBook() {
+            const id = editBookIdInput.value;
+            const title = editTitleInput.value.trim();
+            const author = editAuthorInput.value.trim();
+            const cover = editCoverUrlInput.value.trim();
+
+            if (title && author && cover) {
+                fetch(`/api/books/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ title, author, cover }),
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            return response.json().then(errData => {
+                                throw new Error(errData.message || 'Failed to update book');
+                            });
+                        }
+                    })
+                    .then(updatedBook => {
+                        books = books.map(book => book.id === updatedBook.id ? updatedBook : book);
+                        displayBooks();
+                        closeEditModal();
+                    })
+                    .catch(error => {
+                        console.error('Error updating book:', error);
+                        alert('Failed to update book.');
+                    });
+            } else {
+                alert('Please fill in all book details.');
+            }
+        }
+
+        function deleteBook(id) {
+            if (confirm(`Are you sure you want to delete book ID ${id}?`)) {
+                fetch(`/api/books/${id}`, {
+                    method: 'DELETE',
+                })
+                    .then(response => {
+                        if (response.status === 204) {
+                            books = books.filter(book => book.id !== id);
+                            displayBooks();
+                        } else {
+                            alert('Failed to delete book.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error deleting book:', error);
+                        alert('Failed to delete book.');
+                    });
+            }
+        }
+
+        function logout() {
+            fetch('/logout', {
+                method: 'POST',
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = data.redirect;
+                    } else {
+                        alert(data.message || 'Logout failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during logout:', error);
+                    alert('Logout failed due to a network error');
+                });
+        }
+
+        // Initial book display when the page loads
+        fetchBooks();
+
+        // Close modal if user clicks outside of it
+        window.onclick = function (event) {
+            if (event.target == editBookModal) {
+                closeEditModal();
+            }
+        }
+    </script>
+</body>
+
+</html>
